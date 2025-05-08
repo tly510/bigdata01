@@ -1,10 +1,14 @@
 drinks = ["아이스 아메리카노", "카페 라떼", "수박 주스", "딸기 주스"]
 prices = [1500, 2500, 4000, 4200]
-
 # drinks = ["아이스 아메리카노"]
 # prices = [1500]
-total_price = 0
 amounts = [0] * len(drinks)
+total_price = 0
+
+# 할인 적용 정책
+DISCOUNT_THRESHOLD = 10000  # 할인이 적용되는 임계값 (임계값 이상이면 할인 적용)
+DISCOUNT_RATE = 0.1  # 할인율
+
 
 def apply_discount(price: int) -> float:
     """
@@ -12,7 +16,9 @@ def apply_discount(price: int) -> float:
     :param price: 할인 전 총 금액
     :return: 할인이 적용된 금액 또는 할인이 적용되지 않은 금액
     """
-    pass
+    if price >= DISCOUNT_THRESHOLD:
+        return  price * (1 - DISCOUNT_RATE)
+    return price
 
 
 def order_process(idx: int) -> None:
@@ -48,7 +54,15 @@ def print_receipt() -> None:
         if amounts[i] > 0:
             print(f"{drinks[i]:^20}{prices[i]:^6}{amounts[i]:^6}{prices[i] * amounts[i]:^6}")
 
-    print(f"총 주문 금액 : {total_price}원")
+    discounted_price = apply_discount(total_price)
+    discount = total_price - discounted_price
+
+    print(f"할인 전 총 주문 금액 : {total_price}원")
+    if discount > 0:
+        print(f"할인 금액 : {discount}원")
+        print(f"할인 적용 후 지불하실 총 금액은 {discounted_price}원 입니다.")
+    else:
+        print(f"할인이 적용되지 않았습니다.\n지불하실 총 금액은 {total_price}원 입니다.")
 
 
 def test() -> None:
